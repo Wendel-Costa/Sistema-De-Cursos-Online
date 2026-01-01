@@ -11,5 +11,7 @@ public abstract class Usuario {
         this.email = email;
     }
 
+    public abstract String getTipo();
+    
     public abstract String getUsuario();
 }
