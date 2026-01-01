@@ -17,6 +17,7 @@ public abstract class Curso implements Produto {
         this.professor = professor;
     }
 
+    @Override
     public int getId() {
         return id;
     }
