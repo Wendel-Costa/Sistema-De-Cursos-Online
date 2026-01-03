@@ -37,8 +37,8 @@ public class CursoGravado extends Curso {
     @Override
     public String getCurso() {
         return String.format(
-                "CursoGravado [id=%d, titulo=%s, cargaHoraria=%d, precoFinal=%.2f, vencimento=%s, professor=%s]",
-                id, titulo, cargaHoraria, calcularPrecoFinal(), dataVencimento, professor.getNome()
+            "CursoGravado [id=%d, titulo=%s, cargaHoraria=%d, precoFinal=%.2f, vencimento=%s, professor=%s]",
+            id, titulo, cargaHoraria, calcularPrecoFinal(), dataVencimento, professor.getNome()
         );
     }
 }

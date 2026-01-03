@@ -4,17 +4,22 @@ import java.time.LocalDateTime;
 import sistemacursos.model.usuarios.Professor;
 
 public class CursoAoVivo extends Curso {
-    private final LocalDateTime dataHoraAula;
+    private final LocalDateTime dataAula;
     private final int vagas;
 
-    public CursoAoVivo(int id, String titulo, int cargaHoraria, double precoBase, Professor professor, LocalDateTime dataHoraAula, int vagas) {
+    public CursoAoVivo(int id, String titulo, int cargaHoraria, double precoBase, Professor professor, LocalDateTime dataAula, int vagas) {
+
         super(id, titulo, cargaHoraria, precoBase, professor);
-        this.dataHoraAula = dataHoraAula;
+        this.dataAula = dataAula;
         this.vagas = vagas;
     }
 
-    public boolean possuiVagas() {
-        return vagas > 0;
+    public LocalDateTime getDataAula() {
+        return dataAula;
+    }
+
+    public int getVagas() {
+        return vagas;
     }
 
     @Override
@@ -24,7 +29,7 @@ public class CursoAoVivo extends Curso {
 
     @Override
     public String getDescricao() {
-        return String.format("Curso ao vivo em %s | Vagas: %d", dataHoraAula, vagas);
+        return "Curso ao vivo";
     }
 
     @Override
@@ -35,8 +40,8 @@ public class CursoAoVivo extends Curso {
     @Override
     public String getCurso() {
         return String.format(
-                "CursoAoVivo [id=%d, titulo=%s, data=%s, vagas=%d, precoFinal=%.2f, professor=%s]",
-                id, titulo, dataHoraAula, vagas, calcularPrecoFinal(), professor.getNome()
+            "CursoAoVivo [id=%d, titulo=%s, data=%s, vagas=%d, precoFinal=%.2f, professor=%s]",
+            id, titulo, dataAula, vagas, calcularPrecoFinal(), professor.getNome()
         );
     }
 }

@@ -22,6 +22,18 @@ public abstract class Curso implements Produto {
         return id;
     }
 
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public int getCargaHoraria() {
+        return cargaHoraria;
+    }
+
+    public double getPrecoBase() {
+        return precoBase;
+    }
+
     public Professor getProfessor() {
         return professor;
     }
