@@ -24,4 +24,10 @@ public class Professor extends Usuario {
                 id, nome, email, especialidade
         );
     }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+
 }

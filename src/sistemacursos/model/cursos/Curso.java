@@ -22,6 +22,12 @@ public abstract class Curso implements Produto {
         return id;
     }
 
+    @Override
+    public String toString() {
+        return titulo;
+    }
+
+
     public String getTitulo() {
         return titulo;
     }

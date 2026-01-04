@@ -32,4 +32,10 @@ public class Aluno extends Usuario {
                 id, nome, email, cursosMatriculados.size()
         );
     }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+
 }
