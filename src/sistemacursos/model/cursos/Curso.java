@@ -3,6 +3,7 @@ package sistemacursos.model.cursos;
 import sistemacursos.model.usuarios.Professor;
 
 public abstract class Curso implements Produto {
+
     protected int id;
     protected String titulo;
     protected int cargaHoraria;
@@ -27,7 +28,6 @@ public abstract class Curso implements Produto {
         return titulo;
     }
 
-
     public String getTitulo() {
         return titulo;
     }
@@ -42,6 +42,22 @@ public abstract class Curso implements Produto {
 
     public Professor getProfessor() {
         return professor;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
+    }
+
+    public void setCargaHoraria(int cargaHoraria) {
+        this.cargaHoraria = cargaHoraria;
+    }
+
+    public void setPrecoBase(double precoBase) {
+        this.precoBase = precoBase;
+    }
+
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
     }
 
     public abstract String getModalidade();

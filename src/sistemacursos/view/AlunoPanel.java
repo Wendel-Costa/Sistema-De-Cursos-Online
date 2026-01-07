@@ -1,11 +1,10 @@
 package sistemacursos.view;
 
+import java.util.List;
+import javax.swing.*;
 import sistemacursos.dao.*;
 import sistemacursos.model.cursos.Curso;
 import sistemacursos.model.usuarios.Aluno;
-
-import javax.swing.*;
-import java.util.List;
 
 public class AlunoPanel extends JPanel {
     private final AlunoDAO alunoDAO = new AlunoDAO();
@@ -15,6 +14,7 @@ public class AlunoPanel extends JPanel {
         JButton btnCadastrar = new JButton("Cadastrar Aluno");
         JButton btnListar = new JButton("Listar Alunos");
         JButton btnVerCursos = new JButton("Ver Cursos do Aluno");
+        JButton btnEditar = new JButton("Editar Aluno");
 
         btnCadastrar.addActionListener(e -> new CadastroAlunoDialog());
 
@@ -37,7 +37,9 @@ public class AlunoPanel extends JPanel {
 
         btnVerCursos.addActionListener(e -> {
             String idStr = JOptionPane.showInputDialog("ID do aluno:");
-            if (idStr == null) return;
+            if (idStr == null) {
+                return;
+            }
 
             int alunoId = Integer.parseInt(idStr);
             List<Curso> cursos = matriculaDAO.listarCursosDoAluno(alunoId);
@@ -61,8 +63,28 @@ public class AlunoPanel extends JPanel {
             JOptionPane.showMessageDialog(this, new JScrollPane(tabela));
         });
 
+        btnEditar.addActionListener(e -> {
+            String idStr = JOptionPane.showInputDialog("ID do aluno:");
+            if (idStr == null) {
+                return;
+            }
+
+            int id = Integer.parseInt(idStr);
+            Aluno aluno = alunoDAO.listar()
+                    .stream()
+                    .filter(a -> a.getId() == id)
+                    .findFirst()
+                    .orElse(null);
+
+            if (aluno != null) {
+                new EditarAlunoDialog(aluno);
+            }
+        });
+
         add(btnCadastrar);
         add(btnListar);
         add(btnVerCursos);
+        add(btnEditar);
+
     }
 }

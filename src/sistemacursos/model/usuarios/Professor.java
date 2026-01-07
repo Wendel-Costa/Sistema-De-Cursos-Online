@@ -1,7 +1,7 @@
 package sistemacursos.model.usuarios;
 
 public class Professor extends Usuario {
-    private final String especialidade;
+    private String especialidade;
 
     public Professor(int id, String nome, String email, String especialidade) {
         super(id, nome, email);
@@ -10,6 +10,10 @@ public class Professor extends Usuario {
 
     public String getEspecialidade() {
         return especialidade;
+    }
+
+    public void setEspecialidade(String especialidade) {
+        this.especialidade = especialidade;
     }
 
     @Override

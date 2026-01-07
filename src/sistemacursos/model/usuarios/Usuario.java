@@ -23,6 +23,14 @@ public abstract class Usuario {
         return email;
     }
 
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+    
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public abstract String getTipo();
 
     public abstract String getUsuario();

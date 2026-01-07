@@ -1,21 +1,22 @@
 package sistemacursos.view;
 
+import java.util.List;
+import javax.swing.*;
 import sistemacursos.dao.CursoDAO;
 import sistemacursos.model.cursos.Curso;
 
-import javax.swing.*;
-import java.util.List;
-
 public class CursoPanel extends JPanel {
+
     private final CursoDAO cursoDAO = new CursoDAO();
 
     public CursoPanel() {
         JButton btnCadastrar = new JButton("Cadastrar Curso");
         JButton btnListar = new JButton("Listar Cursos");
         JButton btnExcluir = new JButton("Excluir Curso");
+        JButton btnEditar = new JButton("Editar Curso");
 
-        btnCadastrar.addActionListener(e ->
-                new CadastroCursoDialog()
+        btnCadastrar.addActionListener(e
+                -> new CadastroCursoDialog()
         );
 
         btnListar.addActionListener(e -> {
@@ -49,8 +50,27 @@ public class CursoPanel extends JPanel {
             }
         });
 
+        btnEditar.addActionListener(e -> {
+            String idStr = JOptionPane.showInputDialog("ID do curso:");
+            if (idStr == null) {
+                return;
+            }
+
+            int id = Integer.parseInt(idStr);
+            Curso curso = cursoDAO.listar()
+                    .stream()
+                    .filter(c -> c.getId() == id)
+                    .findFirst()
+                    .orElse(null);
+
+            if (curso != null) {
+                new EditarCursoDialog(curso);
+            }
+        });
+
         add(btnCadastrar);
         add(btnListar);
         add(btnExcluir);
+        add(btnEditar);
     }
 }
