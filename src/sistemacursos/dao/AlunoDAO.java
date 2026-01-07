@@ -36,6 +36,19 @@ public class AlunoDAO {
         }
     }
 
+    public void excluir(int id) {
+        String sql = "DELETE FROM aluno WHERE id = ?";
+
+        try (Connection con = Conexao.getConexao(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Aluno> listar() {
         List<Aluno> lista = new ArrayList<>();
         String sql = "SELECT * FROM aluno";

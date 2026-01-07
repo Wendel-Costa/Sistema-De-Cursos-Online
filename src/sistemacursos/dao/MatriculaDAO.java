@@ -1,20 +1,19 @@
 package sistemacursos.dao;
 
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import sistemacursos.model.cursos.Curso;
 import sistemacursos.model.cursos.CursoAoVivo;
 import sistemacursos.model.cursos.CursoGravado;
 import sistemacursos.model.usuarios.Professor;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-
 public class MatriculaDAO {
+
     public void matricular(int alunoId, int cursoId) {
         String sql = "INSERT INTO aluno_curso (aluno_id, curso_id) VALUES (?, ?)";
 
-        try (Connection con = Conexao.getConexao();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = Conexao.getConexao(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, alunoId);
             ps.setInt(2, cursoId);
@@ -25,8 +24,33 @@ public class MatriculaDAO {
         }
     }
 
-    public List<Curso> listarCursosDoAluno(int alunoId) {
+    public void excluirPorAluno(int alunoId) {
+        String sql = "DELETE FROM aluno_curso WHERE aluno_id = ?";
 
+        try (Connection con = Conexao.getConexao(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, alunoId);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void excluirPorCurso(int cursoId) {
+        String sql = "DELETE FROM aluno_curso WHERE curso_id = ?";
+
+        try (Connection con = Conexao.getConexao(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, cursoId);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<Curso> listarCursosDoAluno(int alunoId) {
         List<Curso> cursos = new ArrayList<>();
 
         String sql = """
@@ -37,8 +61,7 @@ public class MatriculaDAO {
             WHERE ac.aluno_id = ?
         """;
 
-        try (Connection con = Conexao.getConexao();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = Conexao.getConexao(); PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, alunoId);
             ResultSet rs = ps.executeQuery();

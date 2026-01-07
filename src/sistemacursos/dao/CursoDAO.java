@@ -9,12 +9,10 @@ import sistemacursos.model.cursos.*;
 import sistemacursos.model.usuarios.Professor;
 
 public class CursoDAO {
-
     public void salvar(Curso c) {
         String sql = "INSERT INTO curso (titulo, carga_horaria, preco_base, modalidade, data_vencimento, data_aula, vagas, professor_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection con = Conexao.getConexao(); PreparedStatement ps = con.prepareStatement(sql)) {
-
             ps.setString(1, c.getTitulo());
             ps.setInt(2, c.getCargaHoraria());
             ps.setDouble(3, c.getPrecoBase());
@@ -58,6 +56,19 @@ public class CursoDAO {
             ps.setInt(4, c.getProfessor().getId());
             ps.setInt(5, c.getId());
             ps.execute();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void excluir(int id) {
+        String sql = "DELETE FROM curso WHERE id = ?";
+
+        try (Connection con = Conexao.getConexao(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ps.executeUpdate();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -116,18 +127,5 @@ public class CursoDAO {
         }
 
         return lista;
-    }
-
-    public void excluir(int id) {
-        String sql = "DELETE FROM curso WHERE id = ?";
-
-        try (Connection con = Conexao.getConexao(); PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setInt(1, id);
-            ps.execute();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

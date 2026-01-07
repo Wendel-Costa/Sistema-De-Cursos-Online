@@ -38,6 +38,19 @@ public class ProfessorDAO {
         }
     }
 
+    public void excluir(int id) {
+        String sql = "DELETE FROM professor WHERE id = ?";
+
+        try (Connection con = Conexao.getConexao(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ps.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public List<Professor> listar() {
         List<Professor> lista = new ArrayList<>();
         String sql = "SELECT * FROM professor";

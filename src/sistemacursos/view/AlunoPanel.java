@@ -1,90 +1,149 @@
 package sistemacursos.view;
 
+import java.awt.*;
 import java.util.List;
 import javax.swing.*;
-import sistemacursos.dao.*;
+import javax.swing.table.DefaultTableModel;
+import sistemacursos.dao.AlunoDAO;
+import sistemacursos.dao.MatriculaDAO;
 import sistemacursos.model.cursos.Curso;
 import sistemacursos.model.usuarios.Aluno;
 
 public class AlunoPanel extends JPanel {
     private final AlunoDAO alunoDAO = new AlunoDAO();
     private final MatriculaDAO matriculaDAO = new MatriculaDAO();
+    
+    private JTable tabela;
+    private DefaultTableModel modeloTabela;
 
     public AlunoPanel() {
+        setLayout(new BorderLayout());
+
+        modeloTabela = new DefaultTableModel(
+                new Object[]{"ID", "Nome", "Email"}, 0
+        );
+
+        tabela = new JTable(modeloTabela);
+        add(new JScrollPane(tabela), BorderLayout.CENTER);
+
+        JPanel botoes = new JPanel();
+
         JButton btnCadastrar = new JButton("Cadastrar Aluno");
-        JButton btnListar = new JButton("Listar Alunos");
-        JButton btnVerCursos = new JButton("Ver Cursos do Aluno");
-        JButton btnEditar = new JButton("Editar Aluno");
+        JButton btnAtualizar = new JButton("Atualizar Lista");
+        JButton btnVerCursos = new JButton("Ver Cursos");
+        JButton btnEditar = new JButton("Editar");
+        JButton btnExcluir = new JButton("Excluir");
 
-        btnCadastrar.addActionListener(e -> new CadastroAlunoDialog());
+        botoes.add(btnCadastrar);
+        botoes.add(btnAtualizar);
+        botoes.add(btnVerCursos);
+        botoes.add(btnEditar);
+        botoes.add(btnExcluir);
 
-        btnListar.addActionListener(e -> {
-            List<Aluno> alunos = alunoDAO.listar();
+        add(botoes, BorderLayout.SOUTH);
 
-            String[] colunas = {"ID", "Nome", "Email"};
-            Object[][] dados = new Object[alunos.size()][3];
-
-            for (int i = 0; i < alunos.size(); i++) {
-                Aluno a = alunos.get(i);
-                dados[i][0] = a.getId();
-                dados[i][1] = a.getNome();
-                dados[i][2] = a.getEmail();
-            }
-
-            JTable tabela = new JTable(dados, colunas);
-            JOptionPane.showMessageDialog(this, new JScrollPane(tabela));
+        btnCadastrar.addActionListener(e -> {
+            new CadastroAlunoDialog();
+            atualizarTabela();
         });
 
-        btnVerCursos.addActionListener(e -> {
-            String idStr = JOptionPane.showInputDialog("ID do aluno:");
-            if (idStr == null) {
-                return;
-            }
+        btnAtualizar.addActionListener(e -> atualizarTabela());
 
-            int alunoId = Integer.parseInt(idStr);
-            List<Curso> cursos = matriculaDAO.listarCursosDoAluno(alunoId);
+        btnVerCursos.addActionListener(e -> verCursosAluno());
 
-            if (cursos.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Aluno não está matriculado em nenhum curso.");
-                return;
-            }
+        btnEditar.addActionListener(e -> editarAluno());
 
-            String[] colunas = {"Curso", "Modalidade", "Professor"};
-            Object[][] dados = new Object[cursos.size()][3];
+        btnExcluir.addActionListener(e -> excluirAluno());
 
-            for (int i = 0; i < cursos.size(); i++) {
-                Curso c = cursos.get(i);
-                dados[i][0] = c.getTitulo();
-                dados[i][1] = c.getModalidade();
-                dados[i][2] = c.getProfessor().getNome();
-            }
+        atualizarTabela();
+    }
 
-            JTable tabela = new JTable(dados, colunas);
-            JOptionPane.showMessageDialog(this, new JScrollPane(tabela));
-        });
+    private void atualizarTabela() {
+        modeloTabela.setRowCount(0);
 
-        btnEditar.addActionListener(e -> {
-            String idStr = JOptionPane.showInputDialog("ID do aluno:");
-            if (idStr == null) {
-                return;
-            }
+        for (Aluno a : alunoDAO.listar()) {
+            modeloTabela.addRow(new Object[]{
+                a.getId(),
+                a.getNome(),
+                a.getEmail()
+            });
+        }
+    }
 
-            int id = Integer.parseInt(idStr);
-            Aluno aluno = alunoDAO.listar()
-                    .stream()
-                    .filter(a -> a.getId() == id)
-                    .findFirst()
-                    .orElse(null);
+    private void verCursosAluno() {
+        int linha = tabela.getSelectedRow();
 
-            if (aluno != null) {
-                new EditarAlunoDialog(aluno);
-            }
-        });
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um aluno");
+            return;
+        }
 
-        add(btnCadastrar);
-        add(btnListar);
-        add(btnVerCursos);
-        add(btnEditar);
+        int alunoId = (int) modeloTabela.getValueAt(linha, 0);
+        List<Curso> cursos = matriculaDAO.listarCursosDoAluno(alunoId);
 
+        if (cursos.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Aluno não está matriculado em nenhum curso.");
+            return;
+        }
+
+        String[] colunas = {"Curso", "Modalidade", "Professor"};
+        Object[][] dados = new Object[cursos.size()][3];
+
+        for (int i = 0; i < cursos.size(); i++) {
+            Curso c = cursos.get(i);
+            dados[i][0] = c.getTitulo();
+            dados[i][1] = c.getModalidade();
+            dados[i][2] = c.getProfessor().getNome();
+        }
+
+        JTable tabelaCursos = new JTable(dados, colunas);
+        JOptionPane.showMessageDialog(this, new JScrollPane(tabelaCursos));
+    }
+
+    private void editarAluno() {
+        int linha = tabela.getSelectedRow();
+
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um aluno");
+            return;
+        }
+
+        int id = (int) modeloTabela.getValueAt(linha, 0);
+
+        Aluno aluno = alunoDAO.listar()
+                .stream()
+                .filter(a -> a.getId() == id)
+                .findFirst()
+                .orElse(null);
+
+        if (aluno != null) {
+            new EditarAlunoDialog(aluno);
+            atualizarTabela();
+        }
+    }
+
+    private void excluirAluno() {
+        int linha = tabela.getSelectedRow();
+
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um aluno");
+            return;
+        }
+
+        int id = (int) modeloTabela.getValueAt(linha, 0);
+        String nome = (String) modeloTabela.getValueAt(linha, 1);
+
+        int opcao = JOptionPane.showConfirmDialog(
+                this,
+                "Excluir o aluno " + nome + "?",
+                "Confirmação",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (opcao == JOptionPane.YES_OPTION) {
+            matriculaDAO.excluirPorAluno(id);
+            alunoDAO.excluir(id);
+            atualizarTabela();
+        }
     }
 }
